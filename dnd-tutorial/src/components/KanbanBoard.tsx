@@ -29,7 +29,7 @@ function KanbanBoard(){
                     <SortableContext items={columnsId}>
                     {columns.map((col =>(<ColumnContainer key={col.id} column={col} 
                     deleteColumn={deleteColumn} updateColumnTitle={updateColumnTitle}
-                    createTask={createTask} deleteTask={deleteTask}
+                    createTask={createTask} deleteTask={deleteTask} updateTask={updateTask}
                     tasks={tasks.filter((task)=>task.columnId===col.id)} />)))}
                     </SortableContext>
                 </div>
@@ -48,7 +48,7 @@ function KanbanBoard(){
                 {activeColumn && (
                     <ColumnContainer column={activeColumn} deleteColumn={deleteColumn}
                      updateColumnTitle={updateColumnTitle} createTask={createTask}
-                     deleteTask={deleteTask}  
+                     deleteTask={deleteTask} updateTask={updateTask}
                      tasks={tasks.filter((task)=>task.columnId===activeColumn.id)} />
                 )}
             </DragOverlay>,document.body
@@ -125,6 +125,14 @@ function KanbanBoard(){
     function deleteTask(id:Id){
         const newTasks = tasks.filter(task => task.id !==id);
         setTask(newTasks);
+    }
+    function updateTask(id:Id,content:string){
+        const newTaskContent= tasks.map( (task) => {
+            if(task.id !== id) return task;
+            return {...task,content};
+        }) 
+
+        setTask(newTaskContent);
     }
 }
 export default KanbanBoard;

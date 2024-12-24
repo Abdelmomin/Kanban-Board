@@ -4,16 +4,43 @@ import { Id, Task } from "../types";
 interface Props{
     task:Task;
     deleteTask:(id:Id)=>void;
+    updateTask:(id:Id,content:string)=>void;
 }
 
-function ColumnContainer({task,deleteTask}: Props){
+function TaskCard({task,deleteTask,updateTask}: Props){
     const [mouseisOver,setMouseisOver]=useState(false);
+    const [editMode,setEditMode]= useState(false);
+    const toogleEditMode= () =>{
+        setEditMode((prev)=>(!prev));
+        setMouseisOver(false);
+    }
 
-
+    if(editMode){
+        return(
+            <div className=" bg-mainBackgroundColor h-[100px] rounded-xl p-2.5 min-h-[100px]
+             items-center flex text-left hover:ring-2 hover:ring-inset
+              hover: ring-rose-500 cursor-grab relative">
+                <textarea className=" h-[100%] w-full resize-none border-none rounded bg-transparent
+                text-white focus:outline-none"
+                value={task.content}
+                autoFocus
+                placeholder="Task content here"
+                onBlur={toogleEditMode}
+                onKeyDown={(e)=>{
+                    if (e.key==="Enter" && e.shiftKey) toogleEditMode();
+                }}
+                onChange={ (e)=> updateTask(task.id,e.target.value)}
+                ></textarea>
+            </div>
+        )
+    }
     return (
-        <div onMouseEnter={()=>setMouseisOver(true)} onMouseLeave={()=>setMouseisOver(false)} className=" bg-mainBackgroundColor h-[100px] rounded-xl p-2.5 min-h-[100px]
+        <div onClick={toogleEditMode}  onMouseEnter={()=>setMouseisOver(true)} onMouseLeave={()=>setMouseisOver(false)}
+         className=" bg-mainBackgroundColor h-[100px] rounded-xl p-2.5 min-h-[100px]
          items-center flex text-left hover:ring-2 hover:ring-inset
-          hover: ring-rose-500 cursor-grab relative">{task.content}
+          hover: ring-rose-500 cursor-grab relative task">
+            <p className=" my-auto h-[90%] w-full overflow-y-auto overflow-x-auto
+            whitespace-pre-wrap">{task.content}</p>
             { mouseisOver &&<button onClick={()=>{deleteTask(task.id)}} 
                 className=" stroke-gray-500 hover:stroke-white
                 hover:bg-coulmnBackroundColor rounded-full px-1 
@@ -23,4 +50,4 @@ function ColumnContainer({task,deleteTask}: Props){
         </div>
     )
 }
-export default ColumnContainer;
+export default TaskCard;
